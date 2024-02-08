@@ -41,6 +41,11 @@ void clear(){
     SDL_Quit();
 }
 
+bool checkCollision(SDL_Rect bar, SDL_FRect ball){
+
+    return false;
+}
+
 int main(int argc, char** argv){
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
@@ -80,7 +85,7 @@ int main(int argc, char** argv){
         printf("cannot load texture : %s", SDL_GetError());
         return -1;
     }
-    SDL_Rect airectangle;
+   SDL_Rect airectangle;
     airectangle.x = 700;
     airectangle.y = 100;
     airectangle.w = 60;
@@ -97,7 +102,7 @@ int main(int argc, char** argv){
         return -1;
     }
 
-    SDL_Rect ballrect;
+    SDL_FRect ballrect;
     ballrect.x = 300;
     ballrect.y = 300;
     ballrect.w = 100;
@@ -121,10 +126,12 @@ int main(int argc, char** argv){
     SDL_Event e;
     while(gameRunning){
         if(startside == 0){
-            ballrect.x -= 1;
+            ballrect.x -= 0.05;
+            ballrect.y -= 0.02;
         }
         else{
-            ballrect.x += 1;
+            ballrect.x += 0.05;
+            ballrect.x += 0.02;
         }
         while( SDL_PollEvent( &e ) ){ 
             if( e.type == SDL_QUIT ){
@@ -132,7 +139,7 @@ int main(int argc, char** argv){
             }
             switch(e.key.keysym.sym){
                 case SDLK_w:
-                    if(playerrectangle.y < 0){
+                    if(playerrectangle.y < 0 || checkCollision(playerrectangle, ballrect)){
                         break;
                     }
                     playerrectangle.y -= 8;
@@ -152,10 +159,9 @@ int main(int argc, char** argv){
         SDL_RenderClear(renderer);
 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
         SDL_RenderCopy(renderer, texture1, nullptr, &playerrectangle);
         SDL_RenderCopy(renderer, texture2, nullptr, &airectangle);
-        SDL_RenderCopy(renderer, texture3, nullptr, &ballrect);
+        SDL_RenderCopyF(renderer, texture3, nullptr, &ballrect);
 
         SDL_RenderPresent(renderer);
     }
