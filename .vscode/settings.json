@@ -49,5 +49,13 @@
         "xtr1common": "cpp",
         "xutility": "cpp"
     },
-    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "C_Cpp.errorSquiggles": "disabled",
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "c:\\Users\\melih\\Desktop\\pongsdl",
+            "binaryPath": "c:\\Users\\melih\\Desktop\\pongsdl\\pong",
+            "binaryArgs": []
+        }
+    ]
 }
