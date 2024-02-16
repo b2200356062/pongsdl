@@ -147,7 +147,6 @@ bool checkCollision(SDL_FRect *bar, SDL_FRect *ball){
     else{
         return false;
     }
-    
 }
 
 void AI(bar* ai, balle* ball, float &deltatime){
