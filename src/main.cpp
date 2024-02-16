@@ -4,7 +4,6 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_ttf.h"
-#include "SDL2/SDL_net.h"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -313,7 +312,6 @@ void clear(){
 
     TTF_Quit();
     IMG_Quit();
-    SDLNet_Quit();
     SDL_Quit();
 }
 
@@ -333,9 +331,6 @@ int main(int argc, char** argv){
     if (TTF_Init() != 0){
         printf("TTF INIT FAILED: %s", SDL_GetError());
         return 1;
-    }
-    if(SDLNet_Init() != 0){
-        printf("SDLNET INIT FAILED: %s", SDL_GetError());
     }
     
     window = SDL_CreateWindow("pong", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
