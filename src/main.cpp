@@ -63,7 +63,7 @@ int init(int& startSide, int& verticalSide){
     ai.model.h = 60;
     ai.model.x = 700;
     ai.model.y = 300;
-    ai.vel = 100;
+    ai.vel = 150;
 
     ball.model.x = SCREEN_WIDTH / 2 - 30;
     ball.model.y = SCREEN_HEIGHT / 2;
@@ -137,13 +137,34 @@ void AI(bar* ai, balle* ball, float &deltatime){
     // y: negatif yukarı pozitif aşşa
     // x: negatif sol pozitif sağ
 
-
+    printf("ball posx: %f, posy: %f\n", ball->model.x, ball->model.y);
     if(ball->model.y > ai->model.y){
-        ai->model.y += ai->vel * deltatime;
+        if(ai->model.y > 535){
+             ai->model.y -= ai->vel * deltatime;
+        }
+        else{
+            if(ball->model.x < SCREEN_WIDTH / 2){
+                ai->model.y += ai->vel * deltatime / 1.5;
+            }
+            else{
+                ai->model.y += ai->vel * deltatime;
+            }
+        }
     }
 
     if(ball->model.y < ai->model.y){
-        ai->model.y -= ai->vel * deltatime;
+        if(ai->model.y < 5){
+            ai->model.y += ai->vel * deltatime;
+        }
+        else{
+            if(ball->model.x > SCREEN_WIDTH / 2){
+                ai->model.y -= ai->vel * deltatime / 1.5;
+            }
+            else{
+                ai->model.y -= ai->vel * deltatime;
+            }
+        }
+        
     }
 }
 
