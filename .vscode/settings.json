@@ -50,11 +50,16 @@
         "xutility": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
-    "C_Cpp.errorSquiggles": "disabled",
+    "C_Cpp.errorSquiggles": "enabled",
     "makefile.launchConfigurations": [
         {
             "cwd": "c:\\Users\\melih\\Desktop\\pongsdl",
             "binaryPath": "c:\\Users\\melih\\Desktop\\pongsdl\\pong",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "c:\\Users\\melih\\Desktop\\compstuff\\c-cpp\\pongsdl",
+            "binaryPath": "c:\\Users\\melih\\Desktop\\compstuff\\c-cpp\\pongsdl\\pong",
             "binaryArgs": []
         }
     ]
