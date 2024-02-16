@@ -411,7 +411,7 @@ int main(int argc, char** argv){
             p.model.y = 300;
         }
 
-        if(scoreleft == 2){
+        if(scoreleft == 3){
             surface4 = TTF_RenderText_Solid(font, "GAME OVER, YOU WON!\nTHANKS FOR PLAYING!", color);
             texture4 = SDL_CreateTextureFromSurface(renderer, surface4);
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
@@ -421,7 +421,7 @@ int main(int argc, char** argv){
             SDL_Delay(2000);
             break;
         }
-        else if(scoreright == 2){
+        else if(scoreright == 3){
             surface4 = TTF_RenderText_Solid(font, "GAME OVER, YOU LOST!\nTHANKS FOR PLAYING!", color);
             texture4 = SDL_CreateTextureFromSurface(renderer, surface4);
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
