@@ -61,7 +61,7 @@ int init(int& startSide, int& verticalSide){
 
     ai.model.w = 10;
     ai.model.h = 60;
-    ai.model.x = 700;
+    ai.model.x = 750;
     ai.model.y = 300;
     ai.vel = 150;
 
