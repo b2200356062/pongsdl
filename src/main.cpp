@@ -132,15 +132,17 @@ bool checkCollision(SDL_FRect *bar, SDL_FRect *ball){
 }
 
 void AI(bar* ai, balle* ball, float &deltatime){
-    //printf("ball velocity x: %f, ball velocity y: %f\n", ball->vel_x, ball->vel_y);
+    printf("ball velocity x: %f, ball velocity y: %f\n", ball->vel_x, ball->vel_y);
     
     // y: negatif yukarı pozitif aşşa
     // x: negatif sol pozitif sağ
 
     if(ball->vel_y < 0){
+        
     }
 
     else if(ball->vel_y > 0){
+
     }
 }
 
