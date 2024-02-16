@@ -20,6 +20,7 @@ SDL_Texture* texture = nullptr;
 SDL_Texture* texture2 = nullptr;
 SDL_Texture* texture3 = nullptr;
 SDL_Texture* texture4 = nullptr;
+
 SDL_Rect scoreRect; SDL_Rect lScore; SDL_Rect rScore; SDL_Rect end;
 
 int scoreleft = 0, scoreright = 0; bool restart = false;
@@ -30,8 +31,6 @@ SDL_Event e;
 
 typedef struct{
     SDL_FRect model;
-    SDL_Surface *surf = nullptr;
-    SDL_Texture *texture = nullptr;
     int width;
     int height;
     float vel;
@@ -39,8 +38,9 @@ typedef struct{
 
 typedef struct{
     SDL_FRect model;
-    SDL_Surface *surf = nullptr;
-    SDL_Texture *texture = nullptr;
+    SDL_Texture* texture = nullptr;
+    SDL_Surface* surf = nullptr;
+    SDL_Rect clip;
     int width;
     int height;
     float vel_x;
@@ -59,51 +59,33 @@ int init(int& startSide, int& verticalSide){
     p.model.y = 300;
     p.vel = 1000;
 
-    p.surf = IMG_Load("assets/pong1.png");
-    if(p.surf == nullptr){
-        printf("cannot load surface :%s", SDL_GetError());
-        return -1;
-    }
-
-    p.texture = SDL_CreateTextureFromSurface(renderer, p.surf);
-    if(p.texture == nullptr){
-        printf("cannot load texture : %s", SDL_GetError());
-        return -1;
-    }
-  
     ai.model.w = 10;
     ai.model.h = 60;
     ai.model.x = 700;
     ai.model.y = 300;
     ai.vel = 100;
 
-    ai.surf = IMG_Load("assets/pong1.png");
-    if(ai.surf == nullptr){
-        printf("cannot load surface 2 :%s", SDL_GetError());
-        return -1;
-    }
-    ai.texture = SDL_CreateTextureFromSurface(renderer, ai.surf);
-    if(ai.texture == nullptr){
-        printf("cannot load texture 2 : %s", SDL_GetError());
-        return -1;
-    }
-
     ball.model.x = SCREEN_WIDTH / 2 - 30;
     ball.model.y = SCREEN_HEIGHT / 2;
-    ball.model.w = 50;
-    ball.model.h = 50;
+    ball.model.w = 16;
+    ball.model.h = 16;
+
+    ball.clip.x = 32; // start pos
+    ball.clip.y = 16; 
+    ball.clip.w = 16; // actual size
+    ball.clip.h = 16;
 
     if(startSide == 0){
-        ball.vel_x = -100;
+    ball.vel_x = -(rand() % 30 + 60);
     }
     else{
-        ball.vel_x = 100;
+        ball.vel_x = (rand() % 30 + 60);
     }
     if(verticalSide == 0){
-        ball.vel_y = -100;
+        ball.vel_y = -(rand() % 30 + 60);
     }
     else{
-        ball.vel_y = 100;
+        ball.vel_y = (rand() % 30 + 60);
     }
 
     ball.surf = IMG_Load("assets/pong2.png");
@@ -132,9 +114,9 @@ int init(int& startSide, int& verticalSide){
     rScore.w = 30;
     rScore.h = 50;
 
-    end.x = 75;
+    end.x = 10;
     end.y = 200;
-    end.w = 650;
+    end.w = 780;
     end.h = 100;
     
     return 0;
@@ -151,43 +133,14 @@ bool checkCollision(SDL_FRect *bar, SDL_FRect *ball){
 
 void AI(bar* ai, balle* ball, float &deltatime){
     //printf("ball velocity x: %f, ball velocity y: %f\n", ball->vel_x, ball->vel_y);
+    
     // y: negatif yukarı pozitif aşşa
     // x: negatif sol pozitif sağ
 
-    // if(ball->vel_y < 0){
-    //     if(ball->vel_x < 0){
-    //         ai->model.y -= ai->vel * deltatime / 2;
-    //     }
-    //     else{
-    //         ai->model.y -= ai->vel * deltatime;
-    //     }
-    // }
-
-    // else if(ball->vel_y > 0){
-    //     if(ball->vel_x < 0){
-    //         ai->model.y += ai->vel * deltatime / 2;
-    //     }
-    //     else{
-    //         ai->model.y += ai->vel * deltatime;
-    //     }
-    // }
-
-    // HALF AŞAĞI
-    if(ball->model.y > SCREEN_HEIGHT / 2){
-        if(ai->model.y < 0){
-            ai->model.y += ai->vel * deltatime;
-        }else{
-            ai->model.y -= ai->vel * deltatime;
-        }
-       
+    if(ball->vel_y < 0){
     }
-    else if(ball->model.y < SCREEN_HEIGHT / 2){
-        if(ai->model.y > 750){
-            ai->model.y -= ai->vel * deltatime;
-        }else{
-            ai->model.y += ai->vel * deltatime;
-        }
-       
+
+    else if(ball->vel_y > 0){
     }
 }
 
@@ -210,7 +163,7 @@ void update(bar *p, bar *ai, balle *ball, TTF_Font *font, SDL_Color color){
                     p->model.y -= p->vel * deltatime;
                     break;
                 case SDLK_s:
-                    if(p->model.y > 540){
+                    if(p->model.y > 535){
                         break;
                     }
                     p->model.y += p->vel * deltatime;
@@ -221,12 +174,14 @@ void update(bar *p, bar *ai, balle *ball, TTF_Font *font, SDL_Color color){
             }
     }    
 
+    // ball movement
     ball->model.x += ball->vel_x * deltatime;
     ball->model.y += ball->vel_y * deltatime;
 
     // score update 
     if(ball->model.x < 0){
         scoreright++;
+        // c++ gaming
         std::string rscore = std::to_string(scoreright);
         char const *rchar = rscore.c_str();
        
@@ -237,6 +192,7 @@ void update(bar *p, bar *ai, balle *ball, TTF_Font *font, SDL_Color color){
     }
     else if(ball->model.x > 780){
         scoreleft++;
+        
         std::string lscore = std::to_string(scoreleft);
         char const *lchar = lscore.c_str();
 
@@ -245,7 +201,8 @@ void update(bar *p, bar *ai, balle *ball, TTF_Font *font, SDL_Color color){
         restart = true;
     }
 
-    if(ball->model.y > SCREEN_HEIGHT - 50){
+    // out of bounds
+    if(ball->model.y > SCREEN_HEIGHT - 16){
         ball->vel_y = -ball->vel_y;
     }
 
@@ -253,6 +210,7 @@ void update(bar *p, bar *ai, balle *ball, TTF_Font *font, SDL_Color color){
         ball->vel_y = -ball->vel_y;
     }
 
+    // collision check
     if(checkCollision(&p->model, &ball->model) == true){
         ball->vel_x = -ball->vel_x;
     }
@@ -261,10 +219,12 @@ void update(bar *p, bar *ai, balle *ball, TTF_Font *font, SDL_Color color){
         ball->vel_x = -ball->vel_x;
     };
 
+    // AI movement
     AI(ai, ball, deltatime);
 
 }
 
+// renders the lines in the middle
 void renderMap(){
     int midpx, midpy, midpyend;
     midpx = SCREEN_WIDTH / 2;
@@ -278,20 +238,22 @@ void renderMap(){
     }
 }
 
+// main render function
 void render(){
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
     SDL_RenderClear(renderer);
-
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    
-    renderMap();
 
+    renderMap();
+    
+    SDL_RenderFillRectF(renderer, &p.model);
+    SDL_RenderFillRectF(renderer, &ai.model);
+    SDL_RenderCopyF(renderer, ball.texture, &ball.clip, &ball.model);
+
+    // UI RENDER
     SDL_RenderCopy(renderer, texture, nullptr, &scoreRect);
     SDL_RenderCopy(renderer, texture2, nullptr, &lScore);
     SDL_RenderCopy(renderer, texture3, nullptr, &rScore);
-    SDL_RenderCopyF(renderer, p.texture, nullptr, &p.model);
-    SDL_RenderCopyF(renderer, ai.texture, nullptr, &ai.model);
-    SDL_RenderCopyF(renderer, ball.texture, nullptr, &ball.model);
 
     SDL_RenderPresent(renderer);
 }
@@ -302,11 +264,13 @@ void clear(){
     SDL_DestroyTexture(texture2);
     SDL_DestroyTexture(texture3);
     SDL_DestroyTexture(texture4);
+    SDL_DestroyTexture(ball.texture);
 
     SDL_FreeSurface(surface);
     SDL_FreeSurface(surface2);
     SDL_FreeSurface(surface3);
     SDL_FreeSurface(surface4);
+    SDL_FreeSurface(ball.surf);
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -315,11 +279,13 @@ void clear(){
     texture2 = nullptr;
     texture3 = nullptr;
     texture4 = nullptr;
+    ball.texture = nullptr;
 
     surface = nullptr;
     surface2 = nullptr;
     surface3 = nullptr;
     surface4 = nullptr;
+    ball.surf = nullptr;
 
     renderer = nullptr;
     window = nullptr;
@@ -382,8 +348,7 @@ int main(int argc, char** argv){
     texture3 = SDL_CreateTextureFromSurface(renderer, surface3);
 
 
-
-
+    // randomize ball movement side
     srand(time(NULL));
     int startSide = rand() % 2;
     int verticalSide = rand() % 2;
@@ -392,27 +357,28 @@ int main(int argc, char** argv){
         printf("init went wrong! returning");
         return 1;
     }
-    Uint32 timetoWait = 1000;
 
     while(gameRunning){    
         update(&p, &ai, &ball, font, color);
         render();
         if(restart){
+
             restart = false;
             startSide = rand() % 2;
             verticalSide = rand() % 2;
             if(startSide == 0){
-                ball.vel_x = -100;
+                ball.vel_x = -(rand() % 30 + 60);
             }
             else{
-                ball.vel_x = 100;
+                ball.vel_x = (rand() % 30 + 60);
             }
             if(verticalSide == 0){
-                ball.vel_y = -100;
+                ball.vel_y = -(rand() % 30 + 60);
             }
             else{
-                ball.vel_y = 100;
+                ball.vel_y = (rand() % 30 + 60);
             }
+
             ball.model.x = SCREEN_WIDTH / 2 - 30;
             ball.model.y = SCREEN_HEIGHT / 2;
             ai.model.x = 700;
@@ -420,31 +386,29 @@ int main(int argc, char** argv){
             p.model.x = 50;
             p.model.y = 300;
         }
-        if(scoreleft == 1){
-            surface4 = TTF_RenderText_Solid(font, "GAME OVER, YOU WON!", color);
+
+        if(scoreleft == 3){
+            surface4 = TTF_RenderText_Solid(font, "GAME OVER, YOU WON!\nTHANKS FOR PLAYING!", color);
             texture4 = SDL_CreateTextureFromSurface(renderer, surface4);
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
             SDL_RenderClear(renderer);
-            //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
             SDL_RenderCopy(renderer, texture4, nullptr, &end);
             SDL_RenderPresent(renderer);
-            SDL_Delay(5000);
+            SDL_Delay(2000);
             break;
         }
-        else if(scoreright == 1){
-            surface4 = TTF_RenderText_Solid(font, "GAME OVER, YOU LOST!", color);
+        else if(scoreright == 3){
+            surface4 = TTF_RenderText_Solid(font, "GAME OVER, YOU LOST!\nTHANKS FOR PLAYING!", color);
             texture4 = SDL_CreateTextureFromSurface(renderer, surface4);
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
             SDL_RenderClear(renderer);
-            //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
             SDL_RenderCopy(renderer, texture4, nullptr, &end);
             SDL_RenderPresent(renderer);
-            SDL_Delay(5000);
+            SDL_Delay(2000);
             break;
         }
     }
 
-    printf("thanks for playing!");
     clear();
     return 0;
 }
