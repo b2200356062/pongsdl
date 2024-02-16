@@ -4,6 +4,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_ttf.h"
+#include "SDL2/SDL_net.h"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -132,12 +133,7 @@ bool checkCollision(SDL_FRect *bar, SDL_FRect *ball){
 }
 
 void AI(bar* ai, balle* ball, float &deltatime){
-    //printf("ball velocity x: %f, ball velocity y: %f\n", ball->vel_x, ball->vel_y);
-    
-    // y: negatif yukarı pozitif aşşa
-    // x: negatif sol pozitif sağ
 
-    printf("ball posx: %f, posy: %f\n", ball->model.x, ball->model.y);
     if(ball->model.y > ai->model.y){
         if(ai->model.y > 535){
              ai->model.y -= ai->vel * deltatime;
@@ -270,6 +266,7 @@ void render(){
 
     renderMap();
     
+    // MODEL RENDER
     SDL_RenderFillRectF(renderer, &p.model);
     SDL_RenderFillRectF(renderer, &ai.model);
     SDL_RenderCopyF(renderer, ball.texture, &ball.clip, &ball.model);
@@ -316,9 +313,12 @@ void clear(){
 
     TTF_Quit();
     IMG_Quit();
+    SDLNet_Quit();
     SDL_Quit();
 }
 
+void network(){
+}
 
 int main(int argc, char** argv){
 
@@ -333,6 +333,9 @@ int main(int argc, char** argv){
     if (TTF_Init() != 0){
         printf("TTF INIT FAILED: %s", SDL_GetError());
         return 1;
+    }
+    if(SDLNet_Init() != 0){
+        printf("SDLNET INIT FAILED: %s", SDL_GetError());
     }
     
     window = SDL_CreateWindow("pong", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -383,8 +386,11 @@ int main(int argc, char** argv){
     }
 
     while(gameRunning){    
+
         update(&p, &ai, &ball, font, color);
+        
         render();
+        
         if(restart){
             SDL_Delay(100);
             restart = false;
