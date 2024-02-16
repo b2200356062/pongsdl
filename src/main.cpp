@@ -76,16 +76,16 @@ int init(int& startSide, int& verticalSide){
     ball.clip.h = 16;
 
     if(startSide == 0){
-    ball.vel_x = -(rand() % 30 + 60);
+    ball.vel_x = -(rand() % 30 + 100);
     }
     else{
-        ball.vel_x = (rand() % 30 + 60);
+        ball.vel_x = (rand() % 30 + 100);
     }
     if(verticalSide == 0){
-        ball.vel_y = -(rand() % 30 + 60);
+        ball.vel_y = -(rand() % 30 + 100);
     }
     else{
-        ball.vel_y = (rand() % 30 + 60);
+        ball.vel_y = (rand() % 30 + 100);
     }
 
     ball.surf = IMG_Load("assets/pong2.png");
@@ -132,17 +132,18 @@ bool checkCollision(SDL_FRect *bar, SDL_FRect *ball){
 }
 
 void AI(bar* ai, balle* ball, float &deltatime){
-    printf("ball velocity x: %f, ball velocity y: %f\n", ball->vel_x, ball->vel_y);
+    //printf("ball velocity x: %f, ball velocity y: %f\n", ball->vel_x, ball->vel_y);
     
     // y: negatif yukarı pozitif aşşa
     // x: negatif sol pozitif sağ
 
-    if(ball->vel_y < 0){
-        
+
+    if(ball->model.y > ai->model.y){
+        ai->model.y += ai->vel * deltatime;
     }
 
-    else if(ball->vel_y > 0){
-
+    if(ball->model.y < ai->model.y){
+        ai->model.y -= ai->vel * deltatime;
     }
 }
 
@@ -364,21 +365,21 @@ int main(int argc, char** argv){
         update(&p, &ai, &ball, font, color);
         render();
         if(restart){
-
+            SDL_Delay(100);
             restart = false;
             startSide = rand() % 2;
             verticalSide = rand() % 2;
             if(startSide == 0){
-                ball.vel_x = -(rand() % 30 + 60);
+                ball.vel_x = -(rand() % 30 + 100);
             }
             else{
-                ball.vel_x = (rand() % 30 + 60);
+                ball.vel_x = (rand() % 30 + 100);
             }
             if(verticalSide == 0){
-                ball.vel_y = -(rand() % 30 + 60);
+                ball.vel_y = -(rand() % 30 + 100);
             }
             else{
-                ball.vel_y = (rand() % 30 + 60);
+                ball.vel_y = (rand() % 30 + 100);
             }
 
             ball.model.x = SCREEN_WIDTH / 2 - 30;
