@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <time.h>
+#include <string.h>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_ttf.h"
@@ -315,9 +316,6 @@ void clear(){
     SDL_Quit();
 }
 
-void network(){
-}
-
 int main(int argc, char** argv){
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
@@ -332,7 +330,7 @@ int main(int argc, char** argv){
         printf("TTF INIT FAILED: %s", SDL_GetError());
         return 1;
     }
-    
+
     window = SDL_CreateWindow("pong", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
     SCREEN_WIDTH, SCREEN_HEIGHT, 0);
     if(window == nullptr){
@@ -369,7 +367,7 @@ int main(int argc, char** argv){
     surface3 = TTF_RenderText_Solid(font, rchar, color);
     texture3 = SDL_CreateTextureFromSurface(renderer, surface3);
 
-
+   
     // randomize ball movement side
     srand(time(NULL));
     int startSide = rand() % 2;
@@ -433,6 +431,7 @@ int main(int argc, char** argv){
             break;
         }
     }
+
 
     clear();
     return 0;
